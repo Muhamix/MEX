@@ -41,3 +41,5 @@
 *.dwo
 
 .clang-format
+.direnv/
+.envrc
