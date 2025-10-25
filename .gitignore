@@ -40,7 +40,4 @@
 # debug information files
 *.dwo
 
-# for the framework of tmux session generation which is being used
-.generate_startup
-
-.direnv/
+.clang-format
