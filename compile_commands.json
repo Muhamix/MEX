@@ -1,0 +1,20 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-Wall",
+      "-Wextra",
+      "-std=c++17",
+      "-g",
+      "-Iinclude",
+      "-Wunused-parameter",
+      "-c",
+      "-o",
+      "out/src/main.o",
+      "src/main.cpp"
+    ],
+    "directory": "/home/m1829js/Documents/git/MEX",
+    "file": "/home/m1829js/Documents/git/MEX/src/main.cpp",
+    "output": "/home/m1829js/Documents/git/MEX/out/src/main.o"
+  }
+]
