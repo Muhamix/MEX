@@ -40,6 +40,11 @@
 # debug information files
 *.dwo
 
+# ghost's shit
 .clang-format
 .direnv/
 .envrc
+
+# token header
+include/token.hpp
+include/token.h
