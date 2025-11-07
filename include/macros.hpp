@@ -1,19 +1,40 @@
 #ifndef MACROS_HPP
 #define MACROS_HPP
+#include <dpp/dpp.h>
 
 /* All the macros this code might need for convenience */
 
-#define PLACE_HOLDER_ID 000000000000000000
+/* type shortcuts */
+#define sstr std::string
+#define npos sstr::npos
+#define sstream std::istringstream
+#define svec std::vector<sstr>
+#define ull unsigned long long
 
-#define BOT_CHANNEL PLACE_HOLDER_ID
-#define MX_GUILD PLACE_HOLDER_ID
+/* split string into array of strings by token */
+#define split_s(str, delim) ([](const std::string& s, char d){ \
+    svec tokens; \
+    sstr token; \
+    sstream iss(s); \
+    while (std::getline(iss, token, d)) tokens.push_back(token); \
+    return tokens; \
+}(str, delim))
 
-#define SEND_MSG(S) bot.message_create(dpp::message(BOT_CHANNEL, S))
-#define CMD_R(c) bot.on_message_create([&bot](const dpp::message_create_t &e) {\
-        const std::string msg = e.msg.content;\
-        if (e.msg.channel_id == BOT_CHANNEL && e.msg.guild_id == MX_GUILD && !msg.compare(0, 1, "$")) {\
-            c\
-        }\
-    })
+/* check if a character is a digit */
+#define IS_DIGIT(c) (c >= '0' && c <= '9')
+
+/* channel and guild */
+#define BOT_CHANNEL_ID  1429064036896608367
+#define MX_GUILD_ID     1429062699488378964
+
+/* command shortcuts */
+#define SEND_MSG(S) bot.message_create(dpp::message(BOT_CHANNEL_ID, S))
+
+/* bot intents */
+#define INTENTS dpp::i_default_intents | dpp::i_message_content | dpp::i_guild_members
+
+/* prints */
+#define DEBUG(s)    std::cout << "\x1b[35;1m[DEBUG]\x1b[0;31m " << s << "\x1b[0m\n"
+#define INFO(s)     std::cout << "\x1b[35;1m[INFO]\x1b[0;32m " << s << "\x1b[0m\n"
 
 #endif
