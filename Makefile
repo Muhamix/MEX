@@ -11,5 +11,5 @@ out/%.o: %.cpp
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 clean:
-	rm -rf out bin logs
+	rm -rf out bin logs include/token.hpp include/token.h
 .PHONY: all clean

@@ -3,7 +3,8 @@
 #include "macros.hpp"
 
 
-// TODO: ADD BAN AND HELP COMMANDS
+// TODO: ADD BAN COMMAND
+// TODO: ADD ASCII ESCAPE SEQUENCE MACROS AND MAKE NEWLINE PRINTING CLEANER
 
 
 /* get user ID from mention */
@@ -44,16 +45,29 @@ int main(void) {
     /* initialise bot */
     bot.on_log(dpp::utility::cout_logger());
     
-    /* bot is ready */ 
+    /* initialise channel and guild when the bot is ready */
+    dpp::guild *MX_G;
+    dpp::channel *BOT_C;
+
+    bot.on_ready([&](const dpp::ready_t &e) {
+
+        MX_G = dpp::find_guild(MX_GUILD_ID);
+        BOT_C = dpp::find_channel(BOT_CHANNEL_ID);
+
+        if (!(MX_G && BOT_C)) {
+            
+            DEBUG("guild or channel is null");
+
+            return;
+        }
+    });
+    
+    /* bot is ready */
     SEND_MSG("I'm online!");
-    std::cout << "\x1b[32;1mOnline\x1b[0m\n";
+    INFO("Online");
 
     /* event handlers */
-    bot.on_message_create([&bot](const dpp::message_create_t &e) {
-
-	    /* initialise channel and guild */
-    	const auto MX_G = dpp::find_guild(MX_GUILD_ID);
-    	const auto BOT_C = dpp::find_channel(BOT_CHANNEL_ID);
+    bot.on_message_create([&](const dpp::message_create_t &e) {
 
         /* make sure the guild and channel aren't null */
         if (!(MX_G && BOT_C)) {
@@ -67,7 +81,7 @@ int main(void) {
 #       define content e.msg.content
 
         /* print received message, mostly for debugging */
-        INFO("received message: \x1b[1m" << content);
+        INFO("received message: " << BOLD << content);
 
         /* check if the message is a command */
         if (content[0] != '$') return;
@@ -127,7 +141,7 @@ int main(void) {
                 /* check for syntax, you need 3 objects, "$", "kick", "username" */
                 if (cmd.size() != 3) {
 
-                    e.reply("Make sure you're using correct syntax:\n```$ kick @user```\n**OR**\n```$ kick ID```");
+                    e.reply("Make sure you're using correct syntax:\n\n```$ kick @user```\n**OR**\n\n```$ kick ID```");
 
                     return;
                 }
@@ -183,11 +197,44 @@ int main(void) {
                     return;
                 }
             }
+
+            /* help command */
+            if (cmd[1] == "help") {
+                
+                /* create an embed to send as response */
+                dpp::embed embed = dpp::embed()
+                    .set_title("Available commands")
+                    
+                    /* the available commands */
+                    .add_field(
+                        "$ ban @user",
+                        "Ban the specified user\n-# Requires BAN MEMBERS permission"
+                    )
+
+                    .add_field(
+                        "$ kick @user",
+                        "Kick the specified user\n-# Requires KICK MEMBERS permission"
+                    )
+
+                    .add_field(
+                        "$ ping",
+                        "Check if the bot is online"
+                    )
+
+                    .add_field(
+                        "$ help",
+                        "Show this help embed"
+                    );
+
+                /* reply to the member in the bot's channel */
+                e.reply(dpp::message(BOT_CHANNEL_ID, embed));
+            }
+        
         }
 
         /* unknown command */
-        e.reply("Unknown command, maybe try\n```$ help```\nfor a list of commands.");
-        INFO("attempted to invoke unknown command: \x1b[1m" << content);
+        e.reply("Unknown command, maybe try\n\n```$ help```\nfor a list of commands.");
+        INFO("attempted to invoke unknown command: " << BOLD << content);
     });
 
     /* keep the bot running and listen for events */
